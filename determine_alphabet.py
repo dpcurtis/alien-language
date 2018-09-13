@@ -39,7 +39,7 @@ def get_ordered_alphabet():
 	ordered_alphabet = []
 
 	# load up the file
-	f = open('words_no_g.txt')
+	f = open('words_no_a.txt')
 	line = f.readline().lower().rstrip('\n')
 
 	# initialize
@@ -79,11 +79,22 @@ def get_ordered_alphabet():
 	# character in any word.
 	for character in alphabet:
 		if character not in ordered_alphabet:
-			for i in range(0, len(ordered_alphabet) - 1):
-				pair_one = '{}{}'.format(ordered_alphabet[i], character)
-				pair_two = '{}{}'.format(character, ordered_alphabet[i+1])
-				if all_upper_lower_pairs.get(pair_one) and all_upper_lower_pairs.get(pair_two):
-					ordered_alphabet.insert(i+1, character)
+			# we check three things: the left edge, the right edge and the middle.
+			# if it didn't appear on the left edge or right, then we will process the middle
+			left_edge_pair = '{}{}'.format(character, ordered_alphabet[0])
+			right_edge_pair = '{}{}'.format(ordered_alphabet[-1], character)
+
+			#check left and right edges first
+			if all_upper_lower_pairs.get(left_edge_pair):
+				ordered_alphabet.insert(0, character)
+			elif all_upper_lower_pairs.get(right_edge_pair):
+				ordered_alphabet.insert(len(ordered_alphabet), character)
+			else:
+				for i in range(0, len(ordered_alphabet) - 1):
+					middle_pair_one = '{}{}'.format(ordered_alphabet[i], character)
+					middle_pair_two = '{}{}'.format(character, ordered_alphabet[i+1])
+					if all_upper_lower_pairs.get(middle_pair_one) and all_upper_lower_pairs.get(middle_pair_two):
+						ordered_alphabet.insert(i+1, character)
 
 	return ordered_alphabet
 
